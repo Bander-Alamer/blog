@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,3 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/posts/create','PostController@create')->name("showCreatePost");
+    Route::get('/posts/{id}','PostController@show')->name('showPost');
+    Route::post('/posts/create','PostController@store')->name('createPost');
