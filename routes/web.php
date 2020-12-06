@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\CheckGender;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,8 +20,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/posts/create','PostController@create')->name("showCreatePost");
-    Route::get('/posts/{id}','PostController@show')->name('showPost');
-    Route::post('/posts/create','PostController@store')->name('createPost');
+Route::get('/home', 'HomeController@index')->name('home')->middleware([checkGender::class]);
+
+
+
+
+
+        Route::get('/posts/create','PostController@create')->name("showCreatePost")->middleware([checkGender::class]);
+            Route::get('/posts/{id}','PostController@show')->name('showPost');
+            Route::post('/posts/create','PostController@store')->name('createPost');
+
+
+            Route::get('/fillGender', "HomeController@genderIndex")->name('show-fillGender');
+            Route::match(['put', 'patch'], '/fillGender', "HomeController@genderUpdate")->name('fillGender');
+
