@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -14,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        return redirect()->route('home');
     }
 
     /**
@@ -53,15 +54,15 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-
-
-        $post = Post::findOrFail($id)->first();
-        if($post){
-            return view('showPost', ["post"=>$post]);
-        }
+    public function show($id){
+            $post = Post::find($id);
+            foreach($post->comments as $comment){
+                $user = User::find($comment->user_id);
+                $comment->user = $user;
+            }
+            return view('showPost', ['post' => $post,'comments' => $post->comments]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -92,8 +93,11 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
-    {
-        //
+    public function destroy($id) {
+        $post = Post::where('id','=',$id);
+        $post->delete();
+        return redirect('/posts')->with('status', 'Post was deleted !');
     }
+
+
 }

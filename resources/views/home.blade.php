@@ -14,7 +14,16 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    @foreach($posts as $post)
+
+
+                    <a href="/posts/{{$post->id}}">
+                        {{$post->title}}
+                    </a>
+                    <br>
+
+                    
+                    @endforeach
                 </div>
             </div>
         </div>
