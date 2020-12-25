@@ -6,28 +6,32 @@
         <div class="col-md-9 offset-md-2">
             <div class="card mb-3" style="min-width: 18rem;">
                 <div class="card-body">
-                    <div class="card-title" id="title">
-                        <h4> {{$post->title}}</h4>
+                    <div class="card-title text-center" id="title">
+                        <h4>{{ $post->title }}</h4>
                     </div>
                     <div class="card-text">
                         <span id="body">{{$post->body}}</span>
                     </div>
                     <hr>
-                    <small class="text-muted"> <p> {{$post->created_at}}</p></small>
-                <p>created by: {{$post->user->name}}</p>
+                    <small class="text-muted">
+                        <p> {{$post->created_at}}</p>
+                    </small>
+                    <p>Created by: {{$post->user->name}}</p>
                     @auth
                @if(auth()->user()->id == $post->user_id)
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="fillInfo()">
-                    EDIT
-                </button>
-                <form action="{{route('posts.destroy', ['id' => $post->id])}}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger float-left"> Delete</button>
-                </form>
+               {{-- if user own this post he can edit only.  --}}
+               <div class="row">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="fillInfo()">
+                        EDIT
+                    </button>
+                    &nbsp;&nbsp;&nbsp;
+                    <form action="{{route('posts.destroy', ['id' => $post->id])}}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger float-left"> Delete</button>
+                    </form>
+               </div>
                 @endif
-                <br>
-                <br>
                 <br>
                 <hr>
                     <div class="form-group">
@@ -36,11 +40,17 @@
                     </div>
                     <button type="submit" class="btn btn-primary" onclick="comment();">Submit</button>
                     <hr>
-                    comments
+                    Comments
                     <div id="commentsDIV">
                         <div id="comments" class="comments">
                             @foreach ($comments as $comment)
-                                {{$comment->comment}} , {{$comment->user->name}} , {{$comment->created_at}} <br>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {{$comment->comment}} <br>
+                                        {{$comment->user->name}} - {{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
+                                    </div>
+                                </div>
+                                <br>
                             @endforeach
                         </div>
                     </div>
@@ -56,7 +66,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
-              Editing post          </h5>
+              Post Editing
+          </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -75,7 +86,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="updatePost()">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updatePost()">Save changes</button>
         </div>
       </div>
     </div>
@@ -158,10 +169,8 @@ request.onload = function() {
         comments.innerHTML = '';
         var data = JSON.parse(this.response);
       console.log(data);
-
         for (let i = 0; i< data.length;i++){
-
-            formattedComments.push("<p>"+data[i].comment+"</p><p>"+data[i].user.name+"</p><p>"+data[i].created_at+"</p><br>");
+            formattedComments.push("<p>"+data[i].comment+"</p><br><p>"+data[i].user.name+"</p><p>"+data[i].created_at+"</p><br>");
         }
 
         for (let i = 0; i< data.length;i++){

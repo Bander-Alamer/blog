@@ -55,7 +55,7 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id){
-            $post = Post::find($id);
+            $post = Post::findOrFail($id);
             foreach($post->comments as $comment){
                 $user = User::find($comment->user_id);
                 $comment->user = $user;

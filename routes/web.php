@@ -23,15 +23,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware([checkGender::class]);
 
-
 Route::post('posts/{id}/comments','CommentController@store');
-Route::get('/posts','PostController@index')->name('posts');
-        Route::get('/posts/create','PostController@create')->name("showCreatePost")->middleware([checkGender::class]);
-            Route::get('/posts/{id}','PostController@show')->name('showPost');
-            Route::post('/posts/create','PostController@store')->name('createPost');
-
-
-            Route::get('/fillGender', "HomeController@genderIndex")->name('show-fillGender');
-            Route::match(['put', 'patch'], '/fillGender', "HomeController@genderUpdate")->name('fillGender');
-
-            Route::delete('/posts/{id}', 'PostController@destroy')->name('posts.destroy');
+Route::get('/posts','PostController@index')->name('posts')->middleware([checkGender::class]);
+Route::get('/posts/create','PostController@create')->name("showCreatePost")->middleware([checkGender::class]);
+Route::get('/posts/{id}','PostController@show')->name('showPost')->middleware([checkGender::class]);
+Route::post('/posts/create','PostController@store')->name('createPost')->middleware([checkGender::class]);
+Route::get('/fillGender', "HomeController@genderIndex")->name('show-fillGender');
+Route::match(['put', 'patch'], '/fillGender', "HomeController@genderUpdate")->name('fillGender');
+Route::delete('/posts/{id}', 'PostController@destroy')->name('posts.destroy');
